@@ -1,0 +1,88 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isTeacher() {
+      return request.auth.token.role == 'teacher';
+    }
+    
+    function isAdmin() {
+      return request.auth.token.role == 'admin';
+    }
+    
+    function isTeacherOrAdmin() {
+      return isTeacher() || isAdmin();
+    }
+    
+    function isValidFileType() {
+      return resource.contentType.matches('image/.*') ||
+             resource.contentType.matches('application/pdf') ||
+             resource.contentType.matches('application/vnd.openxmlformats-officedocument.wordprocessingml.document') ||
+             resource.contentType.matches('video/.*') ||
+             resource.contentType.matches('audio/.*');
+    }
+    
+    function isValidFileSize() {
+      return resource.size <= 50 * 1024 * 1024; // 50MB limit
+    }
+    
+    // User profile images
+    match /users/{userId}/profile/{fileName} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && isOwner(userId) && 
+                      isValidFileType() && 
+                      resource.size <= 5 * 1024 * 1024; // 5MB for profile images
+    }
+    
+    // Course materials (teachers/admins only)
+    match /courses/{courseId}/{fileName} {
+      allow read: if isSignedIn();
+      allow write: if isTeacherOrAdmin() && isValidFileType() && isValidFileSize();
+    }
+    
+    // Lesson content
+    match /lessons/{lessonId}/{fileName} {
+      allow read: if isSignedIn();
+      allow write: if isTeacherOrAdmin() && isValidFileType() && isValidFileSize();
+    }
+    
+    // Student submissions
+    match /submissions/{userId}/{fileName} {
+      allow read: if isSignedIn() && (isOwner(userId) || isTeacherOrAdmin());
+      allow write: if isSignedIn() && isOwner(userId) && 
+                      isValidFileType() && isValidFileSize();
+    }
+    
+    // Temporary uploads (for processing)
+    match /temp/{userId}/{fileName} {
+      allow read, write: if isSignedIn() && isOwner(userId) && 
+                            isValidFileType() && isValidFileSize();
+      // Auto-delete after 24 hours via Cloud Functions
+    }
+    
+    // Generated content (AI, certificates, etc.)
+    match /generated/{userId}/{fileName} {
+      allow read: if isSignedIn() && (isOwner(userId) || isTeacherOrAdmin());
+      allow write: if false; // Only server can write generated content
+    }
+    
+    // Public resources (course thumbnails, etc.)
+    match /public/{fileName} {
+      allow read: if true;
+      allow write: if isTeacherOrAdmin() && isValidFileType() && isValidFileSize();
+    }
+    
+    // Deny all other paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

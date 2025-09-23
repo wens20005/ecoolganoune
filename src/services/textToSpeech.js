@@ -1,7 +1,10 @@
 /**
  * Text-to-Speech Service
  * Provides comprehensive TTS functionality with language support, voice controls, and audio download
+ * Security: No API keys exposed to client, all external TTS calls go through secure server proxy
  */
+
+import { secureApiService } from './secureApi';
 
 export class TextToSpeechService {
   constructor() {
@@ -238,23 +241,55 @@ export class TextToSpeechService {
   }
 
   /**
-   * Generate audio file from text
+   * Generate audio file from text using secure server endpoint
    * @param {string} text - Text to convert
    * @param {string} filename - Filename for download
    */
   async downloadAudio(text, filename = 'speech.wav') {
     try {
-      // For modern browsers that support MediaRecorder
+      // Try browser-native TTS recording first
       if (window.MediaRecorder && navigator.mediaDevices) {
         const audioBlob = await this.recordSpeech(text);
         this.downloadBlob(audioBlob, filename);
       } else {
-        // Fallback: Use external TTS service or show message
-        this.showDownloadMessage();
+        // Fallback to secure server-side TTS generation
+        await this.downloadAudioSecure(text, filename);
       }
     } catch (error) {
       console.error('Audio download failed:', error);
       this.showDownloadMessage();
+    }
+  }
+
+  /**
+   * Download audio using secure server endpoint
+   * @param {string} text - Text to convert
+   * @param {string} filename - Filename for download
+   */
+  async downloadAudioSecure(text, filename) {
+    try {
+      const response = await secureApiService.generateTTSAudio(text, {
+        language: this.settings.language,
+        voice: this.settings.voiceGender,
+        rate: this.settings.rate,
+        pitch: this.settings.pitch,
+        volume: this.settings.volume
+      });
+
+      if (response.audioUrl) {
+        // Download the generated audio file
+        const link = document.createElement('a');
+        link.href = response.audioUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        throw new Error('Failed to generate audio on server');
+      }
+    } catch (error) {
+      console.error('Secure audio download failed:', error);
+      throw error;
     }
   }
 
@@ -384,14 +419,34 @@ export class TextToSpeechService {
   }
 
   /**
-   * Set event callbacks
+   * Set event callbacks with security logging
    */
   setEventCallbacks(callbacks) {
-    this.onStart = callbacks.onStart;
-    this.onEnd = callbacks.onEnd;
+    this.onStart = (utterance) => {
+      secureApiService.logSecurityEvent('tts_started', {
+        language: this.settings.language,
+        textLength: utterance.text?.length || 0
+      });
+      callbacks.onStart?.(utterance);
+    };
+    
+    this.onEnd = (utterance) => {
+      secureApiService.logSecurityEvent('tts_completed', {
+        language: this.settings.language,
+        textLength: utterance.text?.length || 0
+      });
+      callbacks.onEnd?.(utterance);
+    };
+    
     this.onPause = callbacks.onPause;
     this.onResume = callbacks.onResume;
-    this.onError = callbacks.onError;
+    this.onError = (error) => {
+      secureApiService.logSecurityEvent('tts_error', {
+        error: error.message || 'Unknown TTS error',
+        language: this.settings.language
+      });
+      callbacks.onError?.(error);
+    };
   }
 }
 
