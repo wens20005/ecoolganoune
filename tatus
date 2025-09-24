@@ -1,0 +1,45 @@
+[33mcommit 2254a0f43e80ef577d3c95c719554ad67c61094a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: wens20005 <youssefkha390@gmail.com>
+Date:   Tue Sep 23 23:05:43 2025 +0100
+
+    update website
+
+[33mcommit ec4610845c93ba3ff6db9f01c9b504d7cf08c4ba[m
+Author: wens20005 <youssefkha390@gmail.com>
+Date:   Tue Sep 23 22:57:34 2025 +0100
+
+    Create npm-gulp.yml
+
+[33mcommit de92919e581d0eb70420d35091273d7658ef6a37[m
+Author: wens20005 <youssefkha390@gmail.com>
+Date:   Tue Sep 23 21:26:45 2025 +0100
+
+    .git/COMMIT_EDITMSG[+] [unix] (21:30 23/09/2025)     first commit - resolved README.md conflictfirst commit
+    
+    git push -u origin main
+    
+    t commit -m "feat: add file upload utility with Firebase integration and
+    mock storage
+    
+    - Implemented FileUploadManager for handling file uploads, validations,
+      and error handling.
+      - Added mockStorage for testing purposes when Firebase is not
+        configured.
+        - Introduced SecurityScanner for advanced file security checks,
+          including virus detection and threat analysis.
+          - Created SoundManager for audio feedback in the educational app,
+            including success, error, and notification sounds.
+            - Configured Tailwind CSS for styling with custom colors and
+              animations.
+              - Set up Vite configuration for React development
+                egit push -u origin main
+    :wq
+    :q!
+    :wq
+    nvironment."
+
+[33mcommit 7698863a59a58dbce74cdd2ae9d8244d0f333e73[m
+Author: wens20005 <youssefkha390@gmail.com>
+Date:   Tue Sep 23 21:18:13 2025 +0100
+
+    Initial commit
