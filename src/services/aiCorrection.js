@@ -7,8 +7,8 @@ import { databaseService } from './database.js';
 
 class AICorrectionService {
   constructor() {
-    this.apiEndpoint = process.env.VITE_OPENAI_API_ENDPOINT || 'https://api.openai.com/v1';
-    this.apiKey = process.env.VITE_OPENAI_API_KEY;
+    this.apiEndpoint = import.meta.env.VITE_OPENAI_API_ENDPOINT || 'https://api.openai.com/v1';
+    this.apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     this.models = {
       textAnalysis: 'gpt-4',
       codingAssistant: 'gpt-4',

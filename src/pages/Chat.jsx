@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Send, Bot, User, Settings, Key, MessageCircle, Volume2, VolumeX, Play, Pause, Download } from 'lucide-react'
 import TTSSettings from '../components/TTSSettings'
 import { textToSpeechService } from '../services/textToSpeech'

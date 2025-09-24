@@ -11,11 +11,8 @@ import {
   query, 
   where, 
   orderBy, 
-  limit,
   serverTimestamp,
-  increment,
-  arrayUnion,
-  arrayRemove
+  increment
 } from 'firebase/firestore'
 import { Collections, AchievementTypes } from './schema'
 

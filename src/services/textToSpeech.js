@@ -298,45 +298,49 @@ export class TextToSpeechService {
    * @param {string} text - Text to record
    */
   async recordSpeech(text) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        // Create an audio context for recording
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const destination = audioContext.createMediaStreamDestination();
-        
-        // Create oscillator to generate audio (simplified approach)
-        // Note: This is a basic implementation. For production, consider using Web Audio API
-        // or external services for better audio generation
-        
-        const chunks = [];
-        const mediaRecorder = new MediaRecorder(destination.stream);
-        
-        mediaRecorder.ondataavailable = (event) => {
-          if (event.data.size > 0) {
-            chunks.push(event.data);
-          }
-        };
-        
-        mediaRecorder.onstop = () => {
-          const audioBlob = new Blob(chunks, { type: 'audio/wav' });
-          resolve(audioBlob);
-        };
-        
-        // Start recording
-        mediaRecorder.start();
-        
-        // Use speech synthesis
-        await this.speak(text);
-        
-        // Stop recording
-        setTimeout(() => {
-          mediaRecorder.stop();
-          audioContext.close();
-        }, 1000);
-        
-      } catch (error) {
-        reject(error);
-      }
+    return new Promise((resolve, reject) => {
+      const handleRecording = async () => {
+        try {
+          // Create an audio context for recording
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const destination = audioContext.createMediaStreamDestination();
+          
+          // Create oscillator to generate audio (simplified approach)
+          // Note: This is a basic implementation. For production, consider using Web Audio API
+          // or external services for better audio generation
+          
+          const chunks = [];
+          const mediaRecorder = new MediaRecorder(destination.stream);
+          
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+              chunks.push(event.data);
+            }
+          };
+          
+          mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+            resolve(audioBlob);
+          };
+          
+          // Start recording
+          mediaRecorder.start();
+          
+          // Use speech synthesis
+          await this.speak(text);
+          
+          // Stop recording
+          setTimeout(() => {
+            mediaRecorder.stop();
+            audioContext.close();
+          }, 1000);
+          
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      handleRecording();
     });
   }
 

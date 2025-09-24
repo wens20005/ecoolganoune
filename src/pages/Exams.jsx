@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Calendar, Clock, Plus, AlertCircle, CheckCircle } from 'lucide-react'
 
 const Exams = () => {

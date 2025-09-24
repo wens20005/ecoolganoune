@@ -350,7 +350,7 @@ class SecurityScanner {
 
   sanitizeFilename(filename) {
     return filename
-      .replace(/[<>:"/\\|?*\x00-\x1f]/g, '_')
+      .replace(/[<>:"/\\|?*\u0000-\u001f]/g, '_')
       .replace(/^\.+/, '')
       .substring(0, 255)
   }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Plus, Upload, Play, Lock, CheckCircle, FileText, AlertCircle } from 'lucide-react'
 import FileUpload from '../components/FileUpload'
 import { fileUploadManager } from '../utils/fileUpload'
@@ -257,7 +257,7 @@ const Courses = () => {
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
-                Upload Files to "{selectedCourse.title}"
+                Upload Files to &quot;{selectedCourse.title}&quot;
               </h3>
               <button
                 onClick={closeUploadModal}

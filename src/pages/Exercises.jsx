@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react'
-import { Plus, Play, Star, Trophy, Volume2, Upload, FileText } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { Plus, Play, Star, Trophy, Volume2, Upload, FileText, Edit } from 'lucide-react'
 import FileUpload from '../components/FileUpload'
 import Notification from '../components/Notification'
 
@@ -291,7 +291,7 @@ const Exercises = () => {
           
           {exercises.length === 0 && (
             <div className="col-span-full text-center py-12">
-              <FileEdit className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+              <Edit className="h-16 w-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No exercises yet</h3>
               <p className="text-gray-500 mb-4">Create your first exercise to get started</p>
               <button
@@ -405,7 +405,8 @@ const Exercises = () => {
         onClose={closeNotification}
       />
 
-      <style jsx>{`
+      {/* Fireworks Animation */}
+      <style>{`
         .firework {
           position: absolute;
           font-size: 2rem;

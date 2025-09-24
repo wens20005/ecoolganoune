@@ -11,7 +11,6 @@ import {
   where, 
   orderBy, 
   limit,
-  startAfter,
   writeBatch,
   serverTimestamp,
   increment
